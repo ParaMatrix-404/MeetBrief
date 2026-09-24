@@ -31,7 +31,7 @@ def test_analyze_returns_summary_and_action_items(monkeypatch):
     monkeypatch.setattr(
         app_module,
         "analyze_notes",
-        lambda notes: expected,
+        lambda notes, media_part=None: expected,
     )
     client = app_module.app.test_client()
 
@@ -50,4 +50,6 @@ def test_analyze_rejects_missing_notes():
     response = client.post("/api/analyze", json={"notes": " "})
 
     assert response.status_code == 400
-    assert response.get_json() == {"error": "Please provide meeting notes."}
+    assert response.get_json() == {
+        "error": "Provide notes or an audio/video file."
+    }
