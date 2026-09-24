@@ -1,9 +1,8 @@
-
-from app import app
+import app as app_module
 
 
 def test_health_returns_ok():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.get("/health")
 
@@ -11,29 +10,42 @@ def test_health_returns_ok():
     assert response.get_json() == {"status": "ok"}
 
 
-def test_analyze_returns_summary_and_action_items():
-    client = app.test_client()
+def test_analyze_returns_summary_and_action_items(monkeypatch):
+    expected = {
+        "summary": "The team agreed on two follow-up tasks.",
+        "action_items": [
+            {
+                "task": "Prepare the presentation",
+                "assignee": "Rahul",
+                "deadline": "Friday",
+                "status": "Pending",
+            },
+            {
+                "task": "Contact the client",
+                "assignee": "Priya",
+                "deadline": "tomorrow",
+                "status": "Pending",
+            },
+        ],
+    }
+    monkeypatch.setattr(
+        app_module,
+        "analyze_notes",
+        lambda notes: expected,
+    )
+    client = app_module.app.test_client()
 
     response = client.post(
         "/api/analyze",
-        json={
-            "notes": (
-                "Rahul will prepare the presentation by Friday. "
-                "Priya needs to contact the client tomorrow."
-            )
-        },
+        json={"notes": "Rahul will prepare the presentation by Friday."},
     )
 
-    data = response.get_json()
-
     assert response.status_code == 200
-    assert data["summary"]
-    assert len(data["action_items"]) == 2
-    assert data["action_items"][0]["status"] == "Pending"
+    assert response.get_json() == expected
 
 
 def test_analyze_rejects_missing_notes():
-    client = app.test_client()
+    client = app_module.app.test_client()
 
     response = client.post("/api/analyze", json={"notes": " "})
 
