@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 
 MEDIA_MIME_TYPES = {
     ".mp3": "audio/mp3",
@@ -140,7 +140,7 @@ def analyze():
 
 @app.errorhandler(413)
 def request_too_large(error):
-    return jsonify({"error": "The upload must be 10 MB or smaller."}), 413
+    return jsonify({"error": "The upload must be 20 MB or smaller."}), 413
 
 
 @app.get("/health")
