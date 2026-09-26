@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeetBrief — Meeting notes, made clear</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      color: #38312a;
+      background: #f7f4ed;
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes logoGlow {
+      0%, 100% {
+        box-shadow: 0 4px 16px -2px rgba(108, 78, 55, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      }
+      50% {
+        box-shadow: 0 6px 24px -1px rgba(108, 78, 55, 0.48), inset 0 1px 1px rgba(255, 255, 255, 0.55);
+      }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #484037;
+      background-color: #f7f4ed;
+      background-image:
+        radial-gradient(circle at 10% 12%, rgba(228, 214, 195, 0.45) 0, transparent 38rem),
+        radial-gradient(circle at 88% 18%, rgba(214, 196, 172, 0.4) 0, transparent 36rem),
+        radial-gradient(circle at 50% 92%, rgba(245, 238, 226, 0.7) 0, transparent 38rem);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    header, main {
+      width: min(890px, calc(100% - 36px));
+      margin: auto;
+    }
+
+    header {
+      padding: 38px 0 26px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Minimalist Beige & Toasted Caramel Logo */
+    .logo {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #faf7f2;
+      background: linear-gradient(135deg, #6c4e37 0%, #876347 55%, #a67c5a 100%);
+      box-shadow:
+        0 4px 16px -2px rgba(108, 78, 55, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      border: 1px solid #d9cebf;
+      font-size: 21px;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      animation: logoGlow 4.5s ease-in-out infinite;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: default;
+    }
+
+    .logo::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f7f2e7;
+      box-shadow: 0 0 5px rgba(247, 242, 231, 0.8);
+    }
+
+    .logo:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 24px -2px rgba(108, 78, 55, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    header strong {
+      font-size: 19px;
+      font-weight: 700;
+      color: #26201b;
+      letter-spacing: -0.02em;
+    }
+
+    header span {
+      color: #7c7266;
+      font-size: 13px;
+      font-weight: 450;
+    }
+
+    .intro {
+      margin: 12px 0 30px;
+      animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+    }
+
+    .intro h1 {
+      margin: 0 0 10px;
+      font-size: clamp(29px, 4.8vw, 40px);
+      font-weight: 750;
+      color: #26201b;
+      letter-spacing: -0.03em;
+      line-height: 1.16;
+    }
+
+    .intro p {
+      margin: 0;
+      color: #5c5247;
+      font-size: 15.5px;
+      line-height: 1.6;
+    }
+
+    .panel {
+      padding: 32px;
+      border: 1px solid #e5ded3;
+      border-radius: 18px;
+      background: rgba(255, 254, 250, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow:
+        0 2px 4px rgba(60, 48, 36, 0.02),
+        0 14px 34px -4px rgba(60, 48, 36, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .panel:hover {
+      border-color: #c9bea8;
+      box-shadow:
+        0 4px 8px rgba(60, 48, 36, 0.03),
+        0 18px 40px -4px rgba(60, 48, 36, 0.07);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #26201b;
+      letter-spacing: -0.01em;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 155px;
+      resize: vertical;
+      padding: 13px 15px;
+      border: 1px solid #ddd5c7;
+      border-radius: 11px;
+      background: #ffffff;
+      color: #26201b;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.55;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    textarea::placeholder, input::placeholder {
+      color: #a69c8e;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      outline: none;
+      border-color: #7d5a3d;
+      box-shadow: 0 0 0 4px rgba(125, 90, 61, 0.14), 0 1px 2px rgba(60, 48, 36, 0.04);
+    }
+
+    .separator {
+      margin: 22px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: #a69c8e;
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+    }
+
+    .separator::before, .separator::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, #e5ded3 30%, #e5ded3 70%, transparent);
+    }
+
+    .upload {
+      padding: 22px;
+      border: 1.5px dashed #c9bfb0;
+      border-radius: 13px;
+      background: linear-gradient(180deg, rgba(247, 243, 235, 0.7) 0%, rgba(252, 250, 246, 0.9) 100%);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .upload:hover {
+      border-color: #7d5a3d;
+      background: #f5f0e6;
+      box-shadow: 0 4px 16px rgba(125, 90, 61, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .upload p { margin: 6px 0 12px; color: #7c7266; font-size: 13px; }
+    input[type="file"] {
+      max-width: 100%;
+      font: inherit;
+      font-size: 13px;
+      color: #5c5247;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 13px 20px;
+      border: 0;
+      border-radius: 11px;
+      color: #faf7f2;
+      background: linear-gradient(135deg, #6c4e37 0%, #825f43 50%, #997152 100%);
+      font: inherit;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(108, 78, 55, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #5c422e 0%, #705139 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108, 78, 55, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(108, 78, 55, 0.25);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .message {
+      margin-top: 18px;
+      color: #9c3325;
+      background: #fdf5f3;
+      border: 1px solid #fad9d3;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 13.5px;
+      font-weight: 500;
+      animation: fadeInUp 0.3s ease both;
+    }
+
+    .results {
+      margin: 32px 0 56px;
+      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .results h2 {
+      margin: 0 0 12px;
+      font-size: 23px;
+      font-weight: 750;
+      color: #26201b;
+      letter-spacing: -0.025em;
+    }
+
+    .result-card {
+      margin-top: 16px;
+      padding: 24px;
+      border: 1px solid #e5ded3;
+      border-radius: 15px;
+      background: rgba(255, 254, 250, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow:
+        0 2px 4px rgba(60, 48, 36, 0.02),
+        0 10px 26px -2px rgba(60, 48, 36, 0.04);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .result-card:hover {
+      border-color: #c9bea8;
+      box-shadow:
+        0 4px 8px rgba(60, 48, 36, 0.03),
+        0 16px 32px -2px rgba(60, 48, 36, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .result-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 650;
+      color: #26201b;
+      letter-spacing: -0.015em;
+    }
+
+    .result-card p {
+      margin: 0;
+      color: #484037;
+      line-height: 1.62;
+      font-size: 14.5px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 13px 10px; border-bottom: 1px solid #f2ede4; }
+    th {
+      color: #7c7266;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #e5ded3;
+    }
+    td { font-size: 14px; color: #38312a; }
+
+    tbody tr {
+      transition: background-color 0.12s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(247, 243, 235, 0.7);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ddd5c7;
+      border-radius: 11px;
+      background: #ffffff;
+      color: #26201b;
+      font: inherit;
+      font-size: 14px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .meta-grid input[type="date"] {
+      color-scheme: light;
+    }
+
+    .brief-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brief-heading h2 { margin-bottom: 4px; }
+    .brief-heading p { margin: 0; color: #7c7266; font-size: 13.5px; font-weight: 450; }
+
+    .result-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .result-actions button {
+      width: auto;
+      margin: 0;
+      padding: 9px 16px;
+      background: #ffffff;
+      color: #26201b;
+      border: 1px solid #ddd5c7;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(60, 48, 36, 0.04);
+    }
+
+    .result-actions button:hover {
+      background: #f7f3eb;
+      color: #6c4e37;
+      border-color: #876347;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(108, 78, 55, 0.1);
+    }
+
+    .item-edit {
+      width: 100%;
+      min-width: 90px;
+      padding: 7px 10px;
+      border: 1px solid #ddd5c7;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #26201b;
+      font: inherit;
+      font-size: 13.5px;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .delete-item {
+      width: auto;
+      margin: 0;
+      padding: 6px 12px;
+      color: #b84334;
+      background: #fdf5f3;
+      border: 1px solid #fae2dd;
+      border-radius: 8px;
+      box-shadow: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .delete-item:hover {
+      background: #fae2dd;
+      color: #942e20;
+      transform: translateY(-1px);
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      .panel { padding: 22px 18px; }
+      th, td { padding: 10px 6px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .brief-heading { align-items: flex-start; flex-direction: column; }
+      .result-actions { width: 100%; }
+      .result-actions button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">M</div>
+    <div>
+      <strong>MeetBrief</strong><br>
+      <span>Meeting notes, made clear</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Turn meetings into clear next steps.</h1>
+      <p>Paste notes or upload a meeting recording. MeetBrief creates a concise summary and action-item list.</p>
+    </section>
+
+    <form id="meeting-form" class="panel">
+      <div class="meta-grid">
+  <div>
+    <label for="meeting-title">Meeting title</label>
+    <input id="meeting-title" name="meeting_title" type="text"
+      placeholder="e.g. Weekly planning">
+  </div>
+  <div>
+    <label for="meeting-date">Meeting date</label>
+    <input id="meeting-date" name="meeting_date" type="date">
+  </div>
+</div>
+      <label for="notes">Meeting notes</label>
+      <textarea id="notes" name="notes"
+        placeholder="Paste notes or a transcript here…"></textarea>
+
+      <div class="separator">OR ADD A RECORDING</div>
+
+      <div class="upload">
+        <label for="file">Audio or video file</label>
+        <p>MP3, WAV, M4A, MP4, MOV, or WEBM. Maximum 20 MB.</p>
+        <input id="file" name="file" type="file"
+          accept=".mp3,.wav,.m4a,.mp4,.mov,.webm">
+      </div>
+
+      <button id="submit-button" type="submit">Create meeting brief</button>
+      <div id="message" class="message" role="alert" hidden></div>
+    </form>
+
+    <section id="results" class="results" aria-live="polite" hidden>
+      <div class="brief-heading">
+  <div>
+    <h2>Your meeting brief</h2>
+    <p id="meeting-details"></p>
+  </div>
+  <div class="result-actions">
+    <button id="copy-button" type="button">Copy brief</button>
+    <button id="download-button" type="button">Download .txt</button>
+  </div>
+</div>
+
+      <article class="result-card">
+        <h3>Summary</h3>
+        <p id="summary"></p>
+      </article>
+
+      <article class="result-card">
+        <h3>Action items</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Assignee</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Manage</th>
+              </tr>
+            </thead>
+            <tbody id="action-items"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+  const form = document.querySelector("#meeting-form");
+  const button = document.querySelector("#submit-button");
+  const message = document.querySelector("#message");
+  const results = document.querySelector("#results");
+  const summary = document.querySelector("#summary");
+  const actionItems = document.querySelector("#action-items");
+  const meetingDetails = document.querySelector("#meeting-details");
+  const copyButton = document.querySelector("#copy-button");
+  const downloadButton = document.querySelector("#download-button");
+
+  let currentBrief = null;
+
+  function renderActionItems() {
+    actionItems.replaceChildren();
+
+    if (currentBrief.action_items.length === 0) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 5;
+      cell.textContent = "No action items were identified.";
+      row.appendChild(cell);
+      actionItems.appendChild(row);
+      return;
+    }
+
+    currentBrief.action_items.forEach((item, index) => {
+      const row = document.createElement("tr");
+
+      for (const field of ["task", "assignee", "deadline"]) {
+        const cell = document.createElement("td");
+        const input = document.createElement("input");
+        input.className = "item-edit";
+        input.value = item[field] || "";
+        input.setAttribute("aria-label", `Edit ${field}`);
+
+        input.addEventListener("input", () => {
+          if (field === "task") {
+            item[field] = input.value;
+          } else {
+            item[field] = input.value.trim() || null;
+          }
+        });
+
+        cell.appendChild(input);
+        row.appendChild(cell);
+      }
+
+      const statusCell = document.createElement("td");
+      const statusSelect = document.createElement("select");
+      statusSelect.className = "item-edit";
+      statusSelect.setAttribute("aria-label", "Change task status");
+
+      for (const status of ["Pending", "In Progress", "Completed"]) {
+        const option = document.createElement("option");
+        option.value = status;
+        option.textContent = status;
+        statusSelect.appendChild(option);
+      }
+
+      statusSelect.value = item.status || "Pending";
+      statusSelect.addEventListener("change", () => {
+        item.status = statusSelect.value;
+      });
+
+      statusCell.appendChild(statusSelect);
+      row.appendChild(statusCell);
+
+      const manageCell = document.createElement("td");
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "delete-item";
+      deleteButton.textContent = "Delete";
+      deleteButton.setAttribute("aria-label", "Delete this action item");
+
+      deleteButton.addEventListener("click", () => {
+        currentBrief.action_items.splice(index, 1);
+        renderActionItems();
+      });
+
+      manageCell.appendChild(deleteButton);
+      row.appendChild(manageCell);
+      actionItems.appendChild(row);
+    });
+  }
+
+  function formatBrief() {
+    const lines = [
+      currentBrief.title || "Untitled meeting",
+      currentBrief.date ? `Date: ${currentBrief.date}` : "",
+      "",
+      "Summary",
+      currentBrief.summary,
+      "",
+      "Action items"
+    ];
+
+    for (const item of currentBrief.action_items) {
+      lines.push(
+        `- ${item.task} | Assignee: ${item.assignee || "Not stated"}` +
+        ` | Deadline: ${item.deadline || "Not stated"}` +
+        ` | Status: ${item.status}`
+      );
+    }
+
+    return lines.join("\n");
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    message.hidden = true;
+    results.hidden = true;
+
+    const formData = new FormData(form);
+    const notes = formData.get("notes").trim();
+    const file = document.querySelector("#file").files[0];
+
+    if (!notes && !file) {
+      message.textContent =
+        "Enter meeting notes or choose an audio/video file.";
+      message.hidden = false;
+      return;
+    }
+
+    if (file && file.size > 20 * 1024 * 1024) {
+      message.textContent = "The file must be 20 MB or smaller.";
+      message.hidden = false;
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Creating your brief…";
+
+    try {
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not analyze this meeting.");
+      }
+
+      currentBrief = {
+        title: formData.get("meeting_title").trim(),
+        date: formData.get("meeting_date"),
+        summary: data.summary,
+        action_items: data.action_items
+      };
+
+      summary.textContent = currentBrief.summary;
+
+      const details = [
+        currentBrief.title,
+        currentBrief.date
+      ].filter(Boolean);
+      meetingDetails.textContent = details.join(" · ");
+
+      renderActionItems();
+      results.hidden = false;
+      results.scrollIntoView({ behavior: "smooth" });
+    } catch (error) {
+      message.textContent = error.message;
+      message.hidden = false;
+    } finally {
+      button.disabled = false;
+      button.textContent = "Create meeting brief";
+    }
+  });
+
+  copyButton.addEventListener("click", async () => {
+    if (!currentBrief) return;
+
+    try {
+      await navigator.clipboard.writeText(formatBrief());
+      copyButton.textContent = "Copied!";
+      setTimeout(() => {
+        copyButton.textContent = "Copy brief";
+      }, 1500);
+    } catch {
+      message.textContent = "Copy failed. Try downloading the brief instead.";
+      message.hidden = false;
+    }
+  });
+
+  downloadButton.addEventListener("click", () => {
+    if (!currentBrief) return;
+
+    const fileContent = new Blob([formatBrief()], {
+      type: "text/plain;charset=utf-8"
+    });
+    const fileUrl = URL.createObjectURL(fileContent);
+    const link = document.createElement("a");
+    const safeTitle = (currentBrief.title || "meeting-brief")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    link.href = fileUrl;
+    link.download = `${safeTitle || "meeting-brief"}.txt`;
+    link.click();
+    URL.revokeObjectURL(fileUrl);
+  });
+</script>
+</body>
+</html>

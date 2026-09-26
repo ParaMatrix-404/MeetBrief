@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
@@ -82,10 +82,7 @@ def analyze_notes(notes, media_part=None):
 
 @app.get("/")
 def home():
-    return (
-        "<h1>MeetBrief</h1>"
-        "<p>Meeting summary and action-item service</p>"
-    )
+    return render_template("index.html")
 
 
 @app.post("/api/analyze")
