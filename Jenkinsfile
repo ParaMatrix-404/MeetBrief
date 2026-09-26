@@ -19,5 +19,20 @@ pipeline {
                 sh 'docker build -t meetbrief:${BUILD_NUMBER} .'
             }
         }
+
+        stage('Deploy to Render') {
+            steps {
+                withCredentials([string(
+                    credentialsId: 'render-deploy-hook',
+                    variable: 'RENDER_DEPLOY_HOOK'
+                )]) {
+                    sh '''
+                        curl --fail --silent --show-error \
+                            --request POST \
+                            "$RENDER_DEPLOY_HOOK"
+                    '''
+                }
+            }
+        }
     }
 }
